@@ -3,16 +3,18 @@
 private ["_squadLeaders","_teamLeaders","_medics","_autoriflemen","_grenadiers","_marksman","_ATRiflemen","_MMG","_asstMMG","_ammoBearersMMG","_CSG","_unit"];
 private ["_mainRifle", "_grenRifle","_dmRifle","_autorifle","_sidearm","_LAT","_items","_gear","_supGear"];
 
-_mainRifle = "rhs_weap_m4a1"; 					//Default Weapon
-_grenRifle = "rhs_m4a1_m320";					//Default Weapon + Grenade Launcher
-_dmRifle = "rhs_weap_m16a4_bipod";				//Designated Marksman Rifle
-_autorifle = "rhs_weap_m249_pip";				//Light Machinegun
-_supRifle = "rhs_weap_m4_carryhandle_pmag";		//Combat Support Groups Weapon
-_sidearm = "hgun_Pistol_heavy_01_F";			//Default Sidearm
-_mmgWeapon = "rhs_weap_m240B";					//Medium Machinegun
-_LAT = "rhs_weap_M136_hedp";					//Light Anti-Tank Launcher
+_mainRifle = ["rhs_weap_m4a1"]; 					//Default Weapon
+_grenRifle = ["rhs_m4a1_m320"];					//Default Weapon + Grenade Launcher
+_dmRifle = ["rhs_weap_m16a4_bipod"];				//Designated Marksman Rifle
+_autorifle = ["rhs_weap_m249_pip"];				//Light Machinegun
+_supRifle = ["rhs_weap_m4_carryhandle_pmag"];		//Combat Support Groups Weapon
+_sidearm = ["hgun_Pistol_heavy_01_F"];			//Default Sidearm
+_mmgWeapon = ["rhs_weap_m240B"];					//Medium Machinegun
+_LAT = ["rhs_weap_M136_hedp"];					//Light Anti-Tank Launcher
 
 //Unit Identifier Names
+_playerunits = [s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15,s16,s17,s18,s19,s20];
+/*
 _squadLeaders = [s1,s5,s13,s21];
 _teamLeaders = [s9,s17,s25];
 _medics = [s3,s6,s14,s22];
@@ -22,6 +24,7 @@ _marksman = [s8,s16,s24];
 _ATRiflemen = [s12,s20,s28];
 _riflemen = [s4];
 _ratelo = [s2];
+*/
 
 _MMG = [s29,s32];
 _asstMMG = [s30,s33];
