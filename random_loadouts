@@ -1,0 +1,483 @@
+
+// Defined Arrays
+private ["_squadLeaders","_teamLeaders","_medics","_autoriflemen","_grenadiers","_marksman","_ATRiflemen","_MMG","_asstMMG","_ammoBearersMMG","_CSG","_unit"];
+private ["_mainRifle", "_grenRifle","_dmRifle","_autorifle","_sidearm","_LAT","_items","_gear","_supGear"];
+
+_mainRifle = "rhs_weap_m4a1"; 					//Default Weapon
+_grenRifle = "rhs_m4a1_m320";					//Default Weapon + Grenade Launcher
+_dmRifle = "rhs_weap_m16a4_bipod";				//Designated Marksman Rifle
+_autorifle = "rhs_weap_m249_pip";				//Light Machinegun
+_supRifle = "rhs_weap_m4_carryhandle_pmag";		//Combat Support Groups Weapon
+_sidearm = "hgun_Pistol_heavy_01_F";			//Default Sidearm
+_mmgWeapon = "rhs_weap_m240B";					//Medium Machinegun
+_LAT = "rhs_weap_M136_hedp";					//Light Anti-Tank Launcher
+
+//Unit Identifier Names
+_squadLeaders = [s1,s5,s13,s21];
+_teamLeaders = [s9,s17,s25];
+_medics = [s3,s6,s14,s22];
+_autoriflemen = [s7,s11,s15,s19,s23,s27];
+_grenadiers = [s10,s18,s26];
+_marksman = [s8,s16,s24];
+_ATRiflemen = [s12,s20,s28];
+_riflemen = [s4];
+_ratelo = [s2];
+
+_MMG = [s29,s32];
+_asstMMG = [s30,s33];
+_ammoBearersMMG = [s31,s34];
+
+_CSG = [s35,s36,s37,s38]; // Combat Support Group
+
+// Gear = Uniform (0), Helmet(1), Vest(2), Backpack(3), Medical Backpack(4), Military Cap(5), DM Booniehat (6)
+_gear = ["ARC_US_ACU_Uniform","ARC_US_ACU_Helmet_Light","ARC_US_ACU_Plate_Carrier","ARC_US_Backpack_compact_ACU","ARC_US_Backpack_ACU_Med","ARC_US_ACU_Milcap","ARC_US_ACU_booniehat"];
+
+// Gear2 = Uniform (0), Helmet (1), Vest (2), Backpack (3)
+_supGear = ["ARC_US_ATACS_Uniform","rhsusf_hgu56p_mask","ARC_US_ATACS_PlateCarrier_1","ARC_US_Backpack_compact_ACU"]; //Combat Support Group Gear
+
+_items = ["ItemMap","ItemWatch","ItemCompass"];
+//_items = _items + ["rhsusf_ANPVS_15"]; //Uncomment for Night Vision Goggles's
+
+_unit = player;
+
+//Add basic gear to all
+if (alive player) then
+{
+	//Remove all equipment
+	removeallweapons _unit;
+	removeallassigneditems _unit;
+	removeBackpack _unit;
+	removeVest _unit;
+	removeHeadgear _unit;
+	removeUniform _unit;
+
+	//Add Clothing
+	_unit forceaddUniform (_gear select 0);
+	_unit addHeadgear (_gear select 1);
+	_unit addVest (_gear select 2);
+
+	//Add Backpack to those who need it
+	if (player in _squadLeaders || player in _autoriflemen|| player in _grenadiers || player in _ratelo || player in _asstMMG || player in _ammoBearersMMG) then
+	{
+		_unit addBackpack (_gear select 3);
+	};
+
+	//Add Equipment
+	{
+		_unit addItem _x;
+		_unit assignItem _x;
+	} forEach _items;
+
+	//Radios
+	_unit addItemToVest "ACRE_PRC343";
+
+	//Preloaded Magazines
+	(uniformContainer _unit) addMagazineCargoGlobal ["11Rnd_45ACP_Mag",1];
+
+	//Add Weapons
+	_unit addWeapon _sidearm;
+
+	//Add Magazines
+	(uniformContainer _unit) addItemCargoGlobal ["AGM_EarBuds",1];
+	(uniformContainer _unit) addItemCargoGlobal ["AGM_Morphine",1];
+	(uniformContainer _unit) addItemCargoGlobal ["AGM_Epipen",1];
+	(uniformContainer _unit) addMagazineCargoGlobal ["11Rnd_45ACP_Mag",1];
+};
+
+//Squadleaders
+if(player in _squadLeaders) exitWith
+{
+	//Add Extra Equipment
+	_unit addWeapon "Binocular";
+	_unit addItem "ItemGPS";
+	_unit assignItem "ItemGPS";
+	_unit addItemToVest "ACRE_PRC148";
+
+	if (player == s1) then
+	{
+		removeHeadgear _unit;
+		_unit addHeadgear (_gear select 5);
+	};
+
+	//Add Preloaded Magazines
+	(uniformContainer _unit) addMagazineCargoGlobal ["rhs_mag_30Rnd_556x45_Mk318_Stanag",1];
+	(uniformContainer _unit) addMagazineCargoGlobal ["1Rnd_HE_Grenade_shell", 1];
+
+	//Add Weapons
+	_unit addWeapon _grenRifle;
+
+	//Add Magazines
+	(vestContainer _unit) addMagazineCargoGlobal ["rhs_mag_30Rnd_556x45_Mk318_Stanag",3];
+	(vestContainer _unit) addMagazineCargoGlobal ["rhs_mag_30Rnd_556x45_M855A1_Stanag_Tracer_Red", 1];
+	(vestContainer _unit) addMagazineCargoGlobal ["HandGrenade", 2];
+	(vestContainer _unit) addMagazineCargoGlobal ["SmokeShell", 2];
+
+	(backpackContainer _unit) addMagazineCargoGlobal ["1Rnd_HE_Grenade_shell", 3];
+	(backpackContainer _unit) addMagazineCargoGlobal ["1Rnd_SmokeRed_Grenade_shell", 1];
+	(backpackContainer _unit) addMagazineCargoGlobal ["1Rnd_SmokeGreen_Grenade_shell", 2];
+	(backpackContainer _unit) addMagazineCargoGlobal ["1Rnd_Smoke_Grenade_shell", 3];
+	(backpackContainer _unit) addItemCargoGlobal ["AGM_Bandage", 6];
+	(backpackContainer _unit) addItemCargoGlobal ["AGM_CableTie", 2];
+
+	//Add Weapon Attachments
+	_unit addPrimaryWeaponItem "rhsusf_acc_compm4";
+	_unit addPrimaryWeaponItem "acc_flashlight";
+
+	// Select Weapon
+	_unit selectWeapon (primaryWeapon _unit);
+};
+
+//Teamleaders
+if(player in _teamleaders) exitWith
+{
+	//Add Extra Equipment
+	_unit addWeapon "Binocular";
+	_unit addItem "ItemGPS";
+	_unit assignItem "ItemGPS";
+	_unit addItemToVest "ACRE_PRC148";
+
+	//Add Preloaded Magazines
+	(uniformContainer _unit) addMagazineCargoGlobal ["rhs_mag_30Rnd_556x45_Mk318_Stanag",1];
+
+	//Add Weapons
+	_unit addWeapon _mainRifle;
+
+	//Add Magazines
+	(vestContainer _unit) addMagazineCargoGlobal ["rhs_mag_30Rnd_556x45_Mk318_Stanag",3];
+	(vestContainer _unit) addMagazineCargoGlobal ["rhs_mag_30Rnd_556x45_M855A1_Stanag_Tracer_Red", 1];
+	(vestContainer _unit) addMagazineCargoGlobal ["HandGrenade", 2];
+	(vestContainer _unit) addMagazineCargoGlobal ["SmokeShell", 2];
+
+	(vestContainer _unit) addItemCargoGlobal ["AGM_Bandage", 6];
+	(vestContainer _unit) addItemCargoGlobal ["AGM_CableTie", 2];
+
+	//Add Weapon Attachments
+	_unit addPrimaryWeaponItem "rhsusf_acc_compm4";
+	_unit addPrimaryWeaponItem "acc_flashlight";
+
+	// Select Weapon
+	_unit selectWeapon (primaryWeapon _unit);
+};
+
+//Medics
+if(player in _medics) exitWith
+{
+	//If Plt Medic add a PRC-148
+	if(player == s3) then
+	{
+		_unit addItemToVest "ACRE_PRC148";
+	};
+
+	//Medical Backpack
+	_unit addBackpack (_gear select 4); //Medical Backpack
+
+	//Add Preloaded Magazines
+	(uniformContainer _unit) addMagazineCargoGlobal ["rhs_mag_30Rnd_556x45_Mk318_Stanag",1];
+
+	//Add Weapons
+	_unit addWeapon _mainRifle;
+
+	//Add Magazines
+	(vestContainer _unit) addMagazineCargoGlobal ["rhs_mag_30Rnd_556x45_Mk318_Stanag",3];
+	(vestContainer _unit) addMagazineCargoGlobal ["rhs_mag_30Rnd_556x45_M855A1_Stanag_Tracer_Red", 1];
+	(vestContainer _unit) addMagazineCargoGlobal ["HandGrenade", 2];
+	(vestContainer _unit) addMagazineCargoGlobal ["SmokeShell", 2];
+
+	//Note: AGM seems to add medical supplies to medic units automatically
+	(backpackContainer _unit) addItemCargoGlobal ["AGM_Epipen", 4];
+	(backpackContainer _unit) addItemCargoGlobal ["AGM_Bandage", 10];
+	(backpackContainer _unit) addItemCargoGlobal ["AGM_Bloodbag", 2];
+	(backpackContainer _unit) addItemCargoGlobal ["AGM_CableTie", 2];
+
+	//Add Weapon Attachments
+	_unit addPrimaryWeaponItem "rhsusf_acc_compm4";
+	_unit addPrimaryWeaponItem "acc_flashlight";
+
+	// Select Weapon
+	_unit selectWeapon (primaryWeapon _unit);
+};
+
+//Automatic Riflemen
+if(player in _autoriflemen) exitWith
+{
+	//Add Preloaded Magazines
+	(uniformContainer _unit) addMagazineCargoGlobal ["rhsusf_100Rnd_556x45_soft_pouch",1];
+
+	//Add Weapons
+	_unit addWeapon _autorifle;
+
+	//Add Magazines
+	(vestContainer _unit) addMagazineCargoGlobal ["HandGrenade", 2];
+	(vestContainer _unit) addMagazineCargoGlobal ["SmokeShell", 2];
+	(vestContainer _unit) addMagazineCargoGlobal ["rhsusf_100Rnd_556x45_soft_pouch",1];
+	(vestContainer _unit) addItemCargoGlobal ["AGM_Bandage", 6];
+	(vestContainer _unit) addItemCargoGlobal ["AGM_CableTie", 1];
+
+	(backpackContainer _unit) addItemCargoGlobal ["rhsusf_100Rnd_556x45_soft_pouch",1];
+
+	// Select Weapon
+	_unit selectWeapon (primaryWeapon _unit);
+};
+
+//Grenadiers
+if(player in _grenadiers) exitWith
+{
+	//Add Preloaded Magazines
+	(uniformContainer _unit) addMagazineCargoGlobal ["rhs_mag_30Rnd_556x45_Mk318_Stanag",1];
+	(uniformContainer _unit) addMagazineCargoGlobal ["1Rnd_HE_Grenade_shell", 1];
+
+	//Add Weapons
+	_unit addWeapon _grenRifle;
+
+	//Add Magazines
+	(vestContainer _unit) addMagazineCargoGlobal ["rhs_mag_30Rnd_556x45_Mk318_Stanag",3];
+	(vestContainer _unit) addMagazineCargoGlobal ["rhs_mag_30Rnd_556x45_M855A1_Stanag_Tracer_Red", 1];
+	(vestContainer _unit) addMagazineCargoGlobal ["HandGrenade", 2];
+	(vestContainer _unit) addMagazineCargoGlobal ["SmokeShell", 2];
+	(vestContainer _unit) addItemCargoGlobal ["AGM_Bandage", 6];
+	(vestContainer _unit) addItemCargoGlobal ["AGM_CableTie", 2];
+
+	(backpackContainer _unit) addMagazineCargoGlobal ["1Rnd_HE_Grenade_shell", 5];
+	(backpackContainer _unit) addMagazineCargoGlobal ["1Rnd_SmokeRed_Grenade_shell", 1];
+	(backpackContainer _unit) addMagazineCargoGlobal ["1Rnd_SmokeGreen_Grenade_shell", 1];
+	(backpackContainer _unit) addMagazineCargoGlobal ["1Rnd_Smoke_Grenade_shell", 1];
+
+
+	//Add Weapon Attachments
+	_unit addPrimaryWeaponItem "rhsusf_acc_compm4";
+	_unit addPrimaryWeaponItem "acc_flashlight";
+
+	// Select Weapon
+	_unit selectWeapon (primaryWeapon _unit);
+};
+
+if(player in _marksman) exitWith
+{
+	//Change to Boonie Hat
+	//removeHeadgear _unit;
+	//_unit addHeadgear (_gear select 6);
+
+	//Add Preloaded Magazines
+	(uniformContainer _unit) addMagazineCargoGlobal ["rhs_mag_30Rnd_556x45_Mk318_Stanag",1];
+
+	//Add Weapons
+	_unit addWeapon _dmRifle;
+
+	//Add Magazines
+	(vestContainer _unit) addMagazineCargoGlobal ["rhs_mag_30Rnd_556x45_Mk318_Stanag",4];
+	(vestContainer _unit) addMagazineCargoGlobal ["rhs_mag_30Rnd_556x45_M855A1_Stanag_Tracer_Red", 1];
+	(vestContainer _unit) addMagazineCargoGlobal ["HandGrenade", 2];
+	(vestContainer _unit) addMagazineCargoGlobal ["SmokeShell", 2];
+	(vestContainer _unit) addItemCargoGlobal ["AGM_Bandage", 6];
+	(vestContainer _unit) addItemCargoGlobal ["AGM_CableTie", 2];
+
+	//Add Weapon Attachments
+	_unit addPrimaryWeaponItem "rhsusf_acc_ACOG3";
+	_unit addPrimaryWeaponItem "acc_flashlight";
+
+	// Select Weapon
+	_unit selectWeapon (primaryWeapon _unit);
+};
+
+//AT Rifleman
+if(player in _ATRiflemen) exitWith
+{
+	//Add Preloaded Magazines
+	(uniformContainer _unit) addMagazineCargoGlobal ["rhs_mag_30Rnd_556x45_Mk318_Stanag",1];
+	(uniformContainer _unit) addMagazineCargoGlobal ["rhs_m136_hedp_mag",1];
+
+	//Add Weapons
+	_unit addWeapon _mainRifle;
+	_unit addWeapon _LAT;
+
+	(vestContainer _unit) addMagazineCargoGlobal ["rhs_mag_30Rnd_556x45_Mk318_Stanag",3];
+	(vestContainer _unit) addMagazineCargoGlobal ["rhs_mag_30Rnd_556x45_M855A1_Stanag_Tracer_Red", 1];
+	(vestContainer _unit) addMagazineCargoGlobal ["HandGrenade", 2];
+	(vestContainer _unit) addMagazineCargoGlobal ["SmokeShell", 2];
+	(vestContainer _unit) addItemCargoGlobal ["AGM_Bandage", 6];
+	(vestContainer _unit) addItemCargoGlobal ["AGM_CableTie", 2];
+
+	//Add Weapon Attachments
+	_unit addPrimaryWeaponItem "rhsusf_acc_compm4";
+	_unit addPrimaryWeaponItem "acc_flashlight";
+
+	// Select Weapon
+	_unit selectWeapon (primaryWeapon _unit);
+};
+
+if(player in _MMG) exitWith
+{
+	//Add Extra Equipment
+	_unit addWeapon "Binocular";
+	_unit addItem "ItemGPS";
+	_unit assignItem "ItemGPS";
+	_unit addItemToVest "ACRE_PRC148";
+
+	//Add Preloaded Magazines
+	(uniformContainer _unit) addMagazineCargoGlobal ["rhsusf_100Rnd_762x51",1];
+
+	//Add Weapons
+	_unit addWeapon _mmgWeapon;
+
+	//Add Magazines
+	(vestContainer _unit) addMagazineCargoGlobal ["rhsusf_100Rnd_762x51",1];
+	(vestContainer _unit) addMagazineCargoGlobal ["SmokeShell", 2];
+	(vestContainer _unit) addItemCargoGlobal ["AGM_Bandage", 4];
+
+	//Select Weapon
+	_unit selectWeapon (primaryWeapon _unit);
+};
+
+if(player in _asstMMG) exitWith
+{
+	//Add Extra Equipment
+	_unit addWeapon "Binocular";
+
+	//Add Preloaded Magazines
+	(uniformContainer _unit) addMagazineCargoGlobal ["rhs_mag_30Rnd_556x45_Mk318_Stanag",1];
+
+	//Add Weapons
+	_unit addWeapon _mainRifle;
+
+	//Add Magazines
+	(vestContainer _unit) addMagazineCargoGlobal ["rhs_mag_30Rnd_556x45_Mk318_Stanag",3];
+	(vestContainer _unit) addMagazineCargoGlobal ["rhs_mag_30Rnd_556x45_M855A1_Stanag_Tracer_Red", 1];
+	(vestContainer _unit) addMagazineCargoGlobal ["HandGrenade", 2];
+	(vestContainer _unit) addMagazineCargoGlobal ["SmokeShell", 2];
+	(vestContainer _unit) addItemCargoGlobal ["AGM_Bandage", 6];
+	(vestContainer _unit) addItemCargoGlobal ["AGM_CableTie", 2];
+
+	(backpackContainer _unit) addMagazineCargoGlobal ["rhsusf_100Rnd_762x51", 2];
+	(backpackContainer _unit) addItemCargoGlobal ["AGM_SpareBarrel", 1];
+
+	//Add Weapon Attachments
+	_unit addPrimaryWeaponItem "rhsusf_acc_compm4";
+
+	//Select Weapon
+	_unit selectWeapon (primaryWeapon _unit);
+};
+
+if(player in _ammoBearersMMG) exitWith
+{
+	//Add Preloaded Magazines
+	(uniformContainer _unit) addMagazineCargoGlobal ["rhs_mag_30Rnd_556x45_Mk318_Stanag",1];
+
+	//Add Weapons
+	_unit addWeapon _mainRifle;
+
+	(vestContainer _unit) addMagazineCargoGlobal ["rhs_mag_30Rnd_556x45_Mk318_Stanag",3];
+	(vestContainer _unit) addMagazineCargoGlobal ["rhs_mag_30Rnd_556x45_M855A1_Stanag_Tracer_Red", 1];
+	(vestContainer _unit) addMagazineCargoGlobal ["HandGrenade", 2];
+	(vestContainer _unit) addMagazineCargoGlobal ["SmokeShell", 2];
+	(vestContainer _unit) addItemCargoGlobal ["AGM_Bandage", 6];
+	(vestContainer _unit) addItemCargoGlobal ["AGM_CableTie", 2];
+
+	(backpackContainer _unit) addMagazineCargoGlobal ["rhsusf_100Rnd_762x51", 2];
+	//Add Weapon Attachments
+	_unit addPrimaryWeaponItem "rhsusf_acc_compm4";
+
+	//Select Weapon
+	_unit selectWeapon (primaryWeapon _unit);
+};
+
+if(player in _riflemen) exitWith
+{
+	//Add Preloaded Magazines
+	(uniformContainer _unit) addMagazineCargoGlobal ["rhs_mag_30Rnd_556x45_Mk318_Stanag",1];
+
+	//Add Weapons
+	_unit addWeapon _mainRifle;
+
+	//Add Magazines
+	(vestContainer _unit) addMagazineCargoGlobal ["rhs_mag_30Rnd_556x45_Mk318_Stanag",3];
+	(vestContainer _unit) addMagazineCargoGlobal ["rhs_mag_30Rnd_556x45_M855A1_Stanag_Tracer_Red", 1];
+	(vestContainer _unit) addMagazineCargoGlobal ["HandGrenade", 2];
+	(vestContainer _unit) addMagazineCargoGlobal ["SmokeShell", 2];
+	(vestContainer _unit) addItemCargoGlobal ["AGM_Bandage", 6];
+	(vestContainer _unit) addItemCargoGlobal ["AGM_CableTie", 2];
+
+	//Add Weapon Attachments
+	_unit addPrimaryWeaponItem "rhsusf_acc_compm4";
+
+	//Select Weapon
+	_unit selectWeapon (primaryWeapon _unit);
+};
+
+if(player in _ratelo) exitWith
+{
+	_unit addItemToVest "ACRE_PRC148";
+	_unit addItemToBackpack "ACRE_PRC117F";
+
+	//Add Preloaded Magazines
+	(uniformContainer _unit) addMagazineCargoGlobal ["rhs_mag_30Rnd_556x45_Mk318_Stanag",1];
+
+	//Add Weapons
+	_unit addWeapon _mainRifle;
+
+	//Add Magazines
+	(vestContainer _unit) addMagazineCargoGlobal ["rhs_mag_30Rnd_556x45_Mk318_Stanag",3];
+	(vestContainer _unit) addMagazineCargoGlobal ["rhs_mag_30Rnd_556x45_M855A1_Stanag_Tracer_Red", 1];
+	(vestContainer _unit) addMagazineCargoGlobal ["HandGrenade", 2];
+	(vestContainer _unit) addMagazineCargoGlobal ["SmokeShell", 2];
+	(vestContainer _unit) addItemCargoGlobal ["AGM_Bandage", 6];
+	(vestContainer _unit) addItemCargoGlobal ["AGM_CableTie", 2];
+
+	//Add Weapon Attachments
+	_unit addPrimaryWeaponItem "rhsusf_acc_compm4";
+
+	//Select Weapon
+	_unit selectWeapon (primaryWeapon _unit);
+};
+
+//Combat Support Group - Needs tweaking
+if(player in _CSG) exitWith
+{
+	//Remove all equipment
+	removeallweapons _unit;
+	removeallassigneditems _unit;
+	removeBackpack _unit;
+	removeVest _unit;
+	removeHeadgear _unit;
+	removeUniform _unit;
+
+	//Add Clothing
+	_unit forceaddUniform (_supGear select 0);
+	_unit addHeadgear (_supGear select 1); //Should be removed and have crate depending on mission role
+	_unit addVest (_supGear select 2);
+	_unit addBackpack (_supGear select 3);
+
+	//Add Items
+	_items = ["ItemMap","ItemWatch","ItemCompass","ItemGPS"];
+	{
+		_unit addItem _x;
+		_unit assignItem _x;
+	} forEach _items;
+
+	//Radios
+	_unit addItemToVest "ACRE_PRC148";
+	_unit addItemToVest "ACRE_PRC148";
+
+	//Add Preloaded Magazines
+	(uniformContainer _unit) addMagazineCargoGlobal ["rhs_mag_30Rnd_556x45_Mk318_Stanag",1];
+	(uniformContainer _unit) addMagazineCargoGlobal ["11Rnd_45ACP_Mag",1];
+
+	//Add Weapons
+	_unit addWeapon _supRifle;
+	_unit addWeapon _sidearm;
+
+	//Add Magazines
+	(uniformContainer _unit) addItemCargoGlobal ["AGM_EarBuds",1];
+	(uniformContainer _unit) addItemCargoGlobal ["AGM_Morphine",1];
+	(uniformContainer _unit) addItemCargoGlobal ["AGM_Epipen",1];
+	(uniformContainer _unit) addMagazineCargoGlobal ["11Rnd_45ACP_Mag", 2];
+
+	(vestContainer _unit) addMagazineCargoGlobal ["rhs_mag_30Rnd_556x45_Mk318_Stanag",3];
+	(vestContainer _unit) addMagazineCargoGlobal ["SmokeShell", 2];
+	(vestContainer _unit) addItemCargoGlobal ["AGM_Bandage", 4];
+
+	(backpackContainer _unit) addItemCargoGlobal ["ToolKit", 1];
+	(backpackContainer _unit) addItemCargoGlobal ["rhsusf_ANPVS_15",1];
+
+	// Select Weapon
+	_unit selectWeapon (primaryWeapon _unit);
+};
